@@ -237,9 +237,9 @@ var maul = {
 
 const charPool = [obiWan, luke, darth, maul];
 
-// var charId = charPool.map(obj => obj.name.replace(/\s/g, '').toLowerCase()+"Id");
-var imgIdList = charPool.map(obj => obj.getAssignedID());
-console.log("image ID list is : " + imgIdList);
+var allCharIdList = charPool.map(obj => obj.getAssignedID());
+
+console.log("image ID list is : " + allCharIdList);
 
 var enemyImgIdList = "";
 
@@ -247,51 +247,53 @@ var enemyImgIdList = "";
 
 var playerSelected = {};
 var enemySelected = {};
-var defendEnemy = {};
+var defenderSelected = {};
 
-//define the ID tag for images display in html;
-var imgDisplayPlaceId = ["#urCharacter","#enemyCharacter","#defenderCharacter"];
 
-var imgGpTypeClassId = ["allImg", "playerImg", "enemyImg", "defendImg"];
+// create character name,img,health jumbotron image display html
+//divAppendId: it is to find where to add as child of the <div>
+//charname: character name assigned
+//charhealth: character health assigned
+//charlink: character image link
+//charid: give an id to each individual character based on the object.getAssignedID
+//imgGpType: base on nature of the character after player make the selection, assign each character a class based on the their types: all, player, enemy, defender
 
-function addCharacter(addId,charname,charhealth,charlink,charid,imgGpType) {
+function addCharacter(divAppendId,charname,charhealth,charlink,charid,imgGpType) {
 
     var newColumn = $("<div>")
         .addClass("col-md-2 border border-success " + imgGpType)
         .css("z-index", "1")
         .attr("id", charid)
     console.log("id assigned is : " + charid);
-
-    // var nameID = name.replace(/\s/g, '').toLowerCase()+"Id";
-    // newColumn.attr("id",nameID)
-    // console.log("ID created for each Char is : " + nameID);
-
+    
     newColumn.append($("<row>")
                 .append($("<div>")
                     .addClass("col-md-12 text-center font-weight-bold")
                     .text(charname)
                 )
     )
+
     newColumn.append($("<row>")
         .append($("<div>")
             .addClass("col-md-12 text-center")
             .append($("<img>")
                 .attr("src",charlink)
-                .addClass("img-rounded ")
+                .addClass("img-rounded")
                 .attr("height","130px")
             )
         )
     )
-    // console.log("the img URL link is: " + charlink);
 
     newColumn.append($("<row>")
                 .append($("<div>")
-                    .addClass("col-md-12 text-center font-weight-bold")
+                    .addClass("col-md-12 text-center font-weight-bold healthtext")
                     .attr("font-size","2em")
                     .text(charhealth)
                 )
     )
-    $(addId).append(newColumn);
+
+    $(divAppendId).append(newColumn);
+
 };
 
 // for loop to initiate the char display 
@@ -302,19 +304,39 @@ function addCharacter(addId,charname,charhealth,charlink,charid,imgGpType) {
 //     $(".startBtn").attr("disabled", true);
 // });
 
-function enemyImgDisply() {
-    $("."+imgGpTypeClassId[2]).remove()
-    enemySelected.map(obj => addCharacter(imgDisplayPlaceId[1],obj.name,obj.health,obj.link,obj.getAssignedID(),imgGpTypeClassId[2]));
+//define the images display ID tag for image group placeholder and individual char image in html;
+var imgDisplayPlaceHolderId = ["#playerCharacter","#enemyCharacter","#defenderCharacter"];
+var imgDisplayCharId = ["allImg", "playerImg", "enemyImg", "defendImg"];
+
+function enemyImgDisplay() {
+    $("."+imgDisplayCharId[2]).remove()
+    enemySelected.map(obj => addCharacter(imgDisplayPlaceHolderId[1],obj.name,obj.health,obj.link,obj.getAssignedID(),imgDisplayCharId[2]));
 };
 
 function playerImgDisplay() {
-    $("."+imgGpTypeClassId[0]).remove();
-    addCharacter(imgDisplayPlaceId[0],playerSelected.name,playerSelected.health,playerSelected.link,playerSelected.getAssignedID(),imgGpTypeClassId[1]);
+    $("."+imgDisplayCharId[0]).remove();
+    addCharacter(imgDisplayPlaceHolderId[0],playerSelected.name,playerSelected.health,playerSelected.link,playerSelected.getAssignedID(),imgDisplayCharId[1]);
 };
+
+function defenderImgDisplay() {
+    $("."+imgDisplayCharId[3]).remove();
+    addCharacter(imgDisplayPlaceHolderId[2],defenderSelected.name,defenderSelected.health,defenderSelected.link,defenderSelected.getAssignedID(),imgDisplayCharId[3]);
+};
+
+function HealthDisplay() {
+    $(".healthtext").text(defenderSelected.getCurrentHealth());
+    $(".healthtext").text(playerSelected.getCurrentHealth());
+};
+
+
+// var imgDisplayPlaceHolderId = ["#playerCharacter","#enemyCharacter","#defenderCharacter"];
+// var imgDisplayCharId = ["allImg", "playerImg", "enemyImg", "defendImg"];
+
+$(".attackBtn").attr("disabled", true);
 
 // map to initiate the char display 
 $(".startBtn").click(function() {
-    charPool.map(obj => addCharacter(imgDisplayPlaceId[0],obj.name,obj.health,obj.link,obj.getAssignedID(),imgGpTypeClassId[0]));
+    charPool.map(obj => addCharacter(imgDisplayPlaceHolderId[0],obj.name,obj.health,obj.link,obj.getAssignedID(),imgDisplayCharId[0]));
     $(".startBtn").attr("disabled", true);
 
     // Easy way to display all the char compared with map fucntion above 
@@ -323,29 +345,27 @@ $(".startBtn").click(function() {
     //     console.log("the index is: ", index);
     // }); 
 
-    $(imgIdList.map(str => "#"+str).join(", ")).click(function(){
+    $(allCharIdList.map(str => "#"+str).join(", ")).click(function(){
         console.log("this id is : ", this)
 
         var tempCharPool = jQuery.extend(true, [],charPool);
 
-        playerSelected = jQuery.extend(true,[],charPool[imgIdList.indexOf(this.id)]);
+        playerSelected = jQuery.extend(true,[],charPool[allCharIdList.indexOf(this.id)]);
 
         playerSelected.playerB = true;
 
         playerImgDisplay();
 
-        tempCharPool.splice(imgIdList.indexOf(this.id),1);
+        tempCharPool.splice(allCharIdList.indexOf(this.id),1);
 
         enemySelected = jQuery.extend(true,[],tempCharPool);
 
         enemySelected.map(obj => obj.enemyB = true);
 
-        // enemySelected.map(obj => addCharacter(imgDisplayPlaceId[1],obj.name,obj.health,obj.link,obj.getAssignedID(),imgGpTypeClassId[2]));
-
-        enemyImgDisply();
+        enemyImgDisplay();
 
         $("#enemyCharacter").on('click', '.enemyImg', function(){
-            defendEnemy = jQuery.extend(true,[],charPool[imgIdList.indexOf(this.id)]);
+            defenderSelected = jQuery.extend(true,[],charPool[allCharIdList.indexOf(this.id)]);
 
             for (i=0; i<enemySelected.length; i++) {
                 if(enemySelected[i].getAssignedID() == this.id) {
@@ -355,30 +375,42 @@ $(".startBtn").click(function() {
                 }
             };
 
-            enemyImgDisply();
+            enemyImgDisplay();
 
-            defendEnemy.defenderB = true;
-            addCharacter(imgDisplayPlaceId[2],defendEnemy.name,defendEnemy.health,defendEnemy.link,defendEnemy.getAssignedID(),imgDisplayPlaceId[2]);
+            defenderSelected.defenderB = true;
+            
+            // addCharacter(imgDisplayPlaceHolderId[2],defenderSelected.name,defenderSelected.health,defenderSelected.link,defenderSelected.getAssignedID(),imgDisplayPlaceHolderId[2]);
+
+            defenderImgDisplay();
+
+            $(".attackBtn").attr("disabled", false);
 
            $(".attackBtn").click(function(){
 
-                if (enemySelected.length >0 && defendEnemy && typeof defendEnemy.getLiveStatus == 'function') {
-                    if(playerSelected.getLiveStatus()) {
-
-                        console.log("playerSelected.getLiveStatus is", playerSelected.getLiveStatus());
+                if (enemySelected.length >= 0 && defenderSelected) {
+                // if (enemySelected.length > 0 && defenderSelected && typeof defendEnemy.getLiveStatus == 'function') {
+                    if(playerSelected.getLiveStatus() && defenderSelected.getLiveStatus()) {
+                        
+                        console.log("playerSelected.health is", playerSelected.getCurrentHealth());
+                        console.log("defenderSelected.health is", defenderSelected.getCurrentHealth());
                         console.log("playerSelected.getAttackPower : " , playerSelected.getAttackPower());
-                        console.log("defendEnemy.getCounterPower : " , defendEnemy.getCounterPower());
+                        console.log("defenderSelected.getCounterPower : " , defenderSelected.getCounterPower());
     
-                        defendEnemy.getAttached(playerSelected.getAttackPower());
+                        defenderSelected.getAttached(playerSelected.getAttackPower());
                         playerSelected.increasePower();
-                        playerSelected.getAttached(defendEnemy.getCounterPower());
-                    };
+                        playerSelected.getAttached(defenderSelected.getCounterPower());
+                        HealthDisplay();
+
+                    } else if (!defenderSelected.getLiveStatus()) {
+                        $(".attackBtn").attr("disabled", true);
+                        defenderSelected = {};
+                        defenderImgDisplay();
+                    } else if (!playerSelected.getLiveStatus()) {
+                        console.log("Player dead");
+                    }
                 } else {
-                    defendEnemy = {};
-                    console.log("Enemy died")
-
-                };
-
+                    console.log("all done");
+                } 
             });
         });
 
