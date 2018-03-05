@@ -7,6 +7,7 @@ var obiWan = {
     link: "assets/images/obiwan.jpg",
     playerB: false,
     enemyB: false,
+    defenderB: false,
 
     getCurrentHealth: function() {
         return this.health;
@@ -19,7 +20,7 @@ var obiWan = {
     },
 
     getCounterPower: function() {
-        if(this.enemyB && !this.playerB) {
+        if(this.defenderB && !this.playerB) {
         return this.attack;
         }
     },
@@ -46,10 +47,14 @@ var obiWan = {
 
     increasePower: function() {
         if (this.playerB && !this.enemyB) {
-            this.attack = this.attack*2;
+            this.attack = this.attack + 8;
             return this.attack;
         }
     },
+
+    getAttached: function(num) {
+        this.health = this.health - num;
+    }
 
 };
 
@@ -57,10 +62,11 @@ var obiWan = {
 var luke = {
     name: "Luke Skywalker",
     health: 100,
-    attack: 10,
+    attack: 5,
     link: "assets/images/luke.jpg",
     playerB: false,
     enemyB: false,
+    defenderB: false,
 
     getCurrentHealth: function() {
         return this.health;
@@ -73,7 +79,7 @@ var luke = {
     },
 
     getCounterPower: function() {
-        if(this.enemyB && !this.playerB) {
+        if(this.defenderB && !this.playerB) {
         return this.attack;
         }
     },
@@ -100,9 +106,13 @@ var luke = {
 
     increasePower: function() {
         if (this.playerB && !this.enemyB) {
-            this.attack = this.attack*2;
+            this.attack = this.attack + 5;
             return this.attack;
         }
+    },
+
+    getAttached: function(num) {
+        this.health = this.health - num;
     },
 
 };
@@ -111,10 +121,11 @@ var luke = {
 var darth = {
     name: "Darth Sidious",
     health: 150,
-    attack: 15,
+    attack: 10,
     link: "assets/images/darth.jpg",
     playerB: false,
     enemyB: false,
+    defenderB: false,
 
     getCurrentHealth: function() {
         return this.health;
@@ -127,7 +138,7 @@ var darth = {
     },
 
     getCounterPower: function() {
-        if(this.enemyB && !this.playerB) {
+        if(this.defenderB && !this.playerB) {
         return this.attack;
         }
     },
@@ -154,9 +165,13 @@ var darth = {
 
     increasePower: function() {
         if (this.playerB && !this.enemyB) {
-            this.attack = this.attack*2;
+            this.attack = this.attack + 10;
             return this.attack;
         }
+    },
+
+    getAttached: function(num) {
+        this.health = this.health - num;
     },
 
 };
@@ -165,10 +180,11 @@ var darth = {
 var maul = {
     name: "Darth Maul",
     health: 180,
-    attack: 25,
+    attack: 15,
     link: "assets/images/darth_maul.jpg",
     playerB: false,
     enemyB: false,
+    defenderB: false,
 
     getCurrentHealth: function() {
         return this.health;
@@ -181,7 +197,7 @@ var maul = {
     },
 
     getCounterPower: function() {
-        if(this.enemyB && !this.playerB) {
+        if(this.defenderB && !this.playerB) {
         return this.attack;
         }
     },
@@ -208,9 +224,13 @@ var maul = {
 
     increasePower: function() {
         if (this.playerB && !this.enemyB) {
-            this.attack = this.attack*2;
+            this.attack = this.attack + 15;
             return this.attack;
         }
+    },
+
+    getAttached: function(num) {
+        this.health = this.health - num;
     },
 
 };
@@ -230,7 +250,7 @@ var enemySelected = {};
 var defendEnemy = {};
 
 //define the ID tag for images display in html;
-var imgDisplayPlaceId = ["#urCharacter","#enemyCharacter","#defenderChar"];
+var imgDisplayPlaceId = ["#urCharacter","#enemyCharacter","#defenderCharacter"];
 
 var imgGpTypeClassId = ["allImg", "playerImg", "enemyImg", "defendImg"];
 
@@ -258,7 +278,7 @@ function addCharacter(addId,charname,charhealth,charlink,charid,imgGpType) {
             .append($("<img>")
                 .attr("src",charlink)
                 .addClass("img-rounded ")
-                .attr("height","170px")
+                .attr("height","130px")
             )
         )
     )
@@ -282,6 +302,15 @@ function addCharacter(addId,charname,charhealth,charlink,charid,imgGpType) {
 //     $(".startBtn").attr("disabled", true);
 // });
 
+function enemyImgDisply() {
+    $("."+imgGpTypeClassId[2]).remove()
+    enemySelected.map(obj => addCharacter(imgDisplayPlaceId[1],obj.name,obj.health,obj.link,obj.getAssignedID(),imgGpTypeClassId[2]));
+};
+
+function playerImgDisplay() {
+    $("."+imgGpTypeClassId[0]).remove();
+    addCharacter(imgDisplayPlaceId[0],playerSelected.name,playerSelected.health,playerSelected.link,playerSelected.getAssignedID(),imgGpTypeClassId[1]);
+};
 
 // map to initiate the char display 
 $(".startBtn").click(function() {
@@ -295,6 +324,7 @@ $(".startBtn").click(function() {
     // }); 
 
     $(imgIdList.map(str => "#"+str).join(", ")).click(function(){
+        console.log("this id is : ", this)
 
         var tempCharPool = jQuery.extend(true, [],charPool);
 
@@ -302,31 +332,56 @@ $(".startBtn").click(function() {
 
         playerSelected.playerB = true;
 
-        $("."+imgGpTypeClassId[0]).remove()
-
-        addCharacter(imgDisplayPlaceId[0],playerSelected.name,playerSelected.health,playerSelected.link,playerSelected.getAssignedID(),imgGpTypeClassId[1]);
+        playerImgDisplay();
 
         tempCharPool.splice(imgIdList.indexOf(this.id),1);
 
         enemySelected = jQuery.extend(true,[],tempCharPool);
 
-        console.log("Hello~~~~~~~~~~",enemySelected);
-
         enemySelected.map(obj => obj.enemyB = true);
 
-        enemySelected.map(obj => addCharacter(imgDisplayPlaceId[1],obj.name,obj.health,obj.link,obj.getAssignedID(),imgGpTypeClassId[2]));
+        // enemySelected.map(obj => addCharacter(imgDisplayPlaceId[1],obj.name,obj.health,obj.link,obj.getAssignedID(),imgGpTypeClassId[2]));
+
+        enemyImgDisply();
+
+        $("#enemyCharacter").on('click', '.enemyImg', function(){
+            defendEnemy = jQuery.extend(true,[],charPool[imgIdList.indexOf(this.id)]);
+
+            for (i=0; i<enemySelected.length; i++) {
+                if(enemySelected[i].getAssignedID() == this.id) {
+                    enemySelected.splice(i,1);
+                    console.log("This is selected as Enemy: ",enemySelected[i]);
+                    break;
+                }
+            };
+
+            enemyImgDisply();
+
+            defendEnemy.defenderB = true;
+            addCharacter(imgDisplayPlaceId[2],defendEnemy.name,defendEnemy.health,defendEnemy.link,defendEnemy.getAssignedID(),imgDisplayPlaceId[2]);
+
+           $(".attackBtn").click(function(){
+
+                if (enemySelected.length >0 && defendEnemy && typeof defendEnemy.getLiveStatus == 'function') {
+                    if(playerSelected.getLiveStatus()) {
+
+                        console.log("playerSelected.getLiveStatus is", playerSelected.getLiveStatus());
+                        console.log("playerSelected.getAttackPower : " , playerSelected.getAttackPower());
+                        console.log("defendEnemy.getCounterPower : " , defendEnemy.getCounterPower());
+    
+                        defendEnemy.getAttached(playerSelected.getAttackPower());
+                        playerSelected.increasePower();
+                        playerSelected.getAttached(defendEnemy.getCounterPower());
+                    };
+                } else {
+                    defendEnemy = {};
+                    console.log("Enemy died")
+
+                };
+
+            });
+        });
 
     });
 
-    $(".enemyImg").click(function(){
-        defendEnemy = jQuery.extend(true,[],enemySelected[imgIdList.indexOf(this.id)]);
-        console.logg("!!!!!",defendEnemy);
-    });
-
-
-} );
-
-
-
-
-// currentPlayer - Object.assign({},obiWan);
+});
