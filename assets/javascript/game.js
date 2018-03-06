@@ -54,7 +54,15 @@ var obiWan = {
 
     getAttached: function(num) {
         this.health = this.health - num;
-    }
+    },
+
+    getReset: function() {
+        this.health = 120;
+        this.attack = 8;
+        this.playerB = false;
+        this.enemyB = false;
+        this.defenderB = false;
+    },
 
 };
 
@@ -115,13 +123,21 @@ var luke = {
         this.health = this.health - num;
     },
 
+    getReset: function() {
+        this.health = 100;
+        this.attack = 5;
+        this.playerB = false;
+        this.enemyB = false;
+        this.defenderB = false;
+    },
+
 };
 
 // create object which to initiate each character
 var darth = {
     name: "Darth Sidious",
-    health: 150,
-    attack: 10,
+    health: 100,
+    attack: 5,
     link: "assets/images/darth.jpg",
     playerB: false,
     enemyB: false,
@@ -172,6 +188,14 @@ var darth = {
 
     getAttached: function(num) {
         this.health = this.health - num;
+    },
+
+    getReset: function() {
+        this.health = 100;
+        this.attack = 5;
+        this.playerB = false;
+        this.enemyB = false;
+        this.defenderB = false;
     },
 
 };
@@ -231,6 +255,14 @@ var maul = {
 
     getAttached: function(num) {
         this.health = this.health - num;
+    },
+
+    getReset: function() {
+        this.health = 180;
+        this.attack = 15;
+        this.playerB = false;
+        this.enemyB = false;
+        this.defenderB = false;
     },
 
 };
@@ -308,24 +340,46 @@ function addCharacter(divAppendId,charname,charhealth,charlink,charid,imgGpType)
 var imgDisplayPlaceHolderId = ["#playerCharacter","#enemyCharacter","#defenderCharacter"];
 var imgDisplayCharId = ["allImg", "playerImg", "enemyImg", "defendImg"];
 
-function enemyImgDisplay() {
-    $("."+imgDisplayCharId[2]).remove()
-    enemySelected.map(obj => addCharacter(imgDisplayPlaceHolderId[1],obj.name,obj.health,obj.link,obj.getAssignedID(),imgDisplayCharId[2]));
+//Display all characters at the #PlayerCharacter div
+function allCharDisplay() {
+    $("."+imgDisplayCharId[0]).remove();
+    charPool.map(obj => addCharacter(imgDisplayPlaceHolderId[0],obj.name,obj.health,obj.link,obj.getAssignedID(),imgDisplayCharId[0]));
 };
 
+function resetAllDisplay() {
+    
+    charPool.map(obj => obj.getReset());
+    imgDisplayCharId.map(id => $("."+id).remove());
+    playerSelected = {};
+    enemySelected = {};
+    defenderSelected = {};
+
+};
+
+//Display selected Player at the #PlayerCharacter div and remove all others
 function playerImgDisplay() {
     $("."+imgDisplayCharId[0]).remove();
     addCharacter(imgDisplayPlaceHolderId[0],playerSelected.name,playerSelected.health,playerSelected.link,playerSelected.getAssignedID(),imgDisplayCharId[1]);
 };
 
-function defenderImgDisplay() {
-    $("."+imgDisplayCharId[3]).remove();
-    addCharacter(imgDisplayPlaceHolderId[2],defenderSelected.name,defenderSelected.health,defenderSelected.link,defenderSelected.getAssignedID(),imgDisplayCharId[3]);
+//Display all other Enemies at the #enemyCharacter div and remove all others
+function enemyImgDisplay() {
+    $("."+imgDisplayCharId[2]).remove()
+    enemySelected.map(obj => addCharacter(imgDisplayPlaceHolderId[1],obj.name,obj.health,obj.link,obj.getAssignedID(),imgDisplayCharId[2]));
 };
 
+//Display selected Defender at the #defenderCharacter div and remove all others
+function defenderImgDisplay() {
+    $("."+imgDisplayCharId[3]).remove();
+    if(typeof defenderSelected.getLiveStatus === "function") {
+        addCharacter(imgDisplayPlaceHolderId[2],defenderSelected.name,defenderSelected.health,defenderSelected.link,defenderSelected.getAssignedID(),imgDisplayCharId[3]);
+    }
+};
+
+//update Health value for both Player and Defender after each attack
 function HealthDisplay() {
-    $(".healthtext").text(defenderSelected.getCurrentHealth());
-    $(".healthtext").text(playerSelected.getCurrentHealth());
+    $(".playerImg .healthtext").text(playerSelected.getCurrentHealth());
+    $(".defendImg .healthtext").text(defenderSelected.getCurrentHealth());
 };
 
 
@@ -336,7 +390,10 @@ $(".attackBtn").attr("disabled", true);
 
 // map to initiate the char display 
 $(".startBtn").click(function() {
-    charPool.map(obj => addCharacter(imgDisplayPlaceHolderId[0],obj.name,obj.health,obj.link,obj.getAssignedID(),imgDisplayCharId[0]));
+
+    resetAllDisplay();
+    allCharDisplay();
+
     $(".startBtn").attr("disabled", true);
 
     // Easy way to display all the char compared with map fucntion above 
@@ -346,7 +403,7 @@ $(".startBtn").click(function() {
     // }); 
 
     $(allCharIdList.map(str => "#"+str).join(", ")).click(function(){
-        console.log("this id is : ", this)
+        console.log("this id is : ", this.id)
 
         var tempCharPool = jQuery.extend(true, [],charPool);
 
@@ -369,8 +426,8 @@ $(".startBtn").click(function() {
 
             for (i=0; i<enemySelected.length; i++) {
                 if(enemySelected[i].getAssignedID() == this.id) {
+                    console.log("This is selected as Defender: ",enemySelected[i]);
                     enemySelected.splice(i,1);
-                    console.log("This is selected as Enemy: ",enemySelected[i]);
                     break;
                 }
             };
@@ -385,31 +442,37 @@ $(".startBtn").click(function() {
 
             $(".attackBtn").attr("disabled", false);
 
-           $(".attackBtn").click(function(){
+            console.log("current Player:", playerSelected);
+            console.log("current defender:", defenderSelected);
 
-                if (enemySelected.length >= 0 && defenderSelected) {
+            $(".attackBtn").click(function(){
+
+                if (enemySelected.length >=0 && typeof defenderSelected.getLiveStatus === "function") {
                 // if (enemySelected.length > 0 && defenderSelected && typeof defendEnemy.getLiveStatus == 'function') {
                     if(playerSelected.getLiveStatus() && defenderSelected.getLiveStatus()) {
-                        
-                        console.log("playerSelected.health is", playerSelected.getCurrentHealth());
-                        console.log("defenderSelected.health is", defenderSelected.getCurrentHealth());
-                        console.log("playerSelected.getAttackPower : " , playerSelected.getAttackPower());
-                        console.log("defenderSelected.getCounterPower : " , defenderSelected.getCounterPower());
-    
+                           
                         defenderSelected.getAttached(playerSelected.getAttackPower());
-                        playerSelected.increasePower();
                         playerSelected.getAttached(defenderSelected.getCounterPower());
+                        playerSelected.increasePower();
                         HealthDisplay();
 
-                    } else if (!defenderSelected.getLiveStatus()) {
+                        console.log("playerSelected.getAttackPower : " , playerSelected.getAttackPower());
+                        console.log("defenderSelected.getCounterPower :" , defenderSelected.getCounterPower());
+
+                    } else if (!defenderSelected.getLiveStatus() && playerSelected.getLiveStatus()) {
+                        console.log("defender.health : " , defenderSelected.getCurrentHealth());
                         $(".attackBtn").attr("disabled", true);
                         defenderSelected = {};
                         defenderImgDisplay();
-                    } else if (!playerSelected.getLiveStatus()) {
+                    } else if (!playerSelected.getLiveStatus() && defenderSelected.getLiveStatus()) {
                         console.log("Player dead");
+                    } else if (!defenderSelected.getLiveStatus() && !playerSelected.getLiveStatus()) {
+                        console.log ("Draw");
                     }
-                } else {
+                } else if(enemySelected.length ===0 && typeof defenderSelected.getLiveStatus === "undefined") {
                     console.log("all done");
+                    $(".startBtn").attr("disabled", false);
+                    $(".attackBtn").attr("disabled", true);
                 } 
             });
         });

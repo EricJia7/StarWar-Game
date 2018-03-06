@@ -22,10 +22,6 @@ body{
     opacity: 0.5;
 }
 
-.border-success {
-    border:1px,solid,green;
-}
-
 .backgroundImg {
     position: relative;
     z-index: 1;
@@ -40,4 +36,28 @@ body{
 .noteText {
     font-size: 1em;
     color: black;
+}
+
+.allImg .text-center{
+    background: lightgreen;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.playerImg .text-center{
+    background: lightblue;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.enemyImg .text-center {
+    background: lightcoral;
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.defendImg .text-center {
+    background: orange;
+    font-size: 1.1em;
+    font-weight: bold;
 }
