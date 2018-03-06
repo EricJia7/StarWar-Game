@@ -203,8 +203,8 @@ var darth = {
 // create object which to initiate each character
 var maul = {
     name: "Darth Maul",
-    health: 180,
-    attack: 15,
+    health: 400,
+    attack: 20,
     link: "assets/images/darth_maul.jpg",
     playerB: false,
     enemyB: false,
@@ -258,8 +258,8 @@ var maul = {
     },
 
     getReset: function() {
-        this.health = 180;
-        this.attack = 15;
+        this.health = 400;
+        this.attack = 20;
         this.playerB = false;
         this.enemyB = false;
         this.defenderB = false;
@@ -386,15 +386,15 @@ function HealthDisplay() {
 // var imgDisplayPlaceHolderId = ["#playerCharacter","#enemyCharacter","#defenderCharacter"];
 // var imgDisplayCharId = ["allImg", "playerImg", "enemyImg", "defendImg"];
 
-$(".attackBtn").attr("disabled", true);
-
 // map to initiate the char display 
 $(".startBtn").click(function() {
+
+    console.log("~~~~~~~~~~~~~~~~~~~~startbtn function called");
 
     resetAllDisplay();
     allCharDisplay();
 
-    $(".startBtn").attr("disabled", true);
+    // $(".startBtn").attr("disabled", true);
 
     // Easy way to display all the char compared with map fucntion above 
     // $('.allchar').click(function(){
@@ -403,6 +403,9 @@ $(".startBtn").click(function() {
     // }); 
 
     $(allCharIdList.map(str => "#"+str).join(", ")).click(function(){
+
+        console.log("~~~~~~~~~~~~~~~~~~~~startbtn +1  function called");
+
         console.log("this id is : ", this.id)
 
         var tempCharPool = jQuery.extend(true, [],charPool);
@@ -422,6 +425,9 @@ $(".startBtn").click(function() {
         enemyImgDisplay();
 
         $("#enemyCharacter").on('click', '.enemyImg', function(){
+
+            console.log("~~~~~~~~~~~~~~~~~~~~startbtn +2  function called");
+
             defenderSelected = jQuery.extend(true,[],charPool[allCharIdList.indexOf(this.id)]);
 
             for (i=0; i<enemySelected.length; i++) {
@@ -447,33 +453,52 @@ $(".startBtn").click(function() {
 
             $(".attackBtn").click(function(){
 
-                if (enemySelected.length >=0 && typeof defenderSelected.getLiveStatus === "function") {
-                // if (enemySelected.length > 0 && defenderSelected && typeof defendEnemy.getLiveStatus == 'function') {
-                    if(playerSelected.getLiveStatus() && defenderSelected.getLiveStatus()) {
+                console.log("~~~~~~~~~~~~~~~~~~~~startbtn +3  function called");
+
+                console.log("~~~~~~~~~~~~~~~~~~~~startbtn +4  function called");
+                if(playerSelected.getLiveStatus() && typeof defenderSelected.getLiveStatus == "function") {
                            
-                        defenderSelected.getAttached(playerSelected.getAttackPower());
-                        playerSelected.getAttached(defenderSelected.getCounterPower());
-                        playerSelected.increasePower();
-                        HealthDisplay();
+                    defenderSelected.getAttached(playerSelected.getAttackPower());
+                    playerSelected.getAttached(defenderSelected.getCounterPower());
+                    playerSelected.increasePower();
+                    HealthDisplay();
 
-                        console.log("playerSelected.getAttackPower : " , playerSelected.getAttackPower());
-                        console.log("defenderSelected.getCounterPower :" , defenderSelected.getCounterPower());
-
-                    } else if (!defenderSelected.getLiveStatus() && playerSelected.getLiveStatus()) {
+                    console.log("playerSelected.getCurrentHealth : " , playerSelected.getCurrentHealth());
+                    console.log("defenderSelected.getCurrentHealth :" , defenderSelected.getCurrentHealth());
+                    console.log("playerSelected.getAttackPower : " , playerSelected.getAttackPower());
+                    console.log("defenderSelected.getCounterPower :" , defenderSelected.getCounterPower());
+                    
+                    if ((!defenderSelected.getLiveStatus()) && playerSelected.getLiveStatus()) {
                         console.log("defender.health : " , defenderSelected.getCurrentHealth());
-                        $(".attackBtn").attr("disabled", true);
+                        // $(".attackBtn").attr("disabled", true);
+                        $(".attackBtn").unbind("click");
                         defenderSelected = {};
                         defenderImgDisplay();
-                    } else if (!playerSelected.getLiveStatus() && defenderSelected.getLiveStatus()) {
+                    };
+                        
+                    if (!playerSelected.getLiveStatus() && defenderSelected.getLiveStatus()) {
                         console.log("Player dead");
-                    } else if (!defenderSelected.getLiveStatus() && !playerSelected.getLiveStatus()) {
+                        // $(".attackBtn").attr("disabled", true);
+                        $(".attackBtn").unbind("click");
+                        // playerSelected = {};
+                        // playerImgDisplay();
+                    };
+                        
+                    if (!defenderSelected.getLiveStatus() && !playerSelected.getLiveStatus()) {
                         console.log ("Draw");
-                    }
-                } else if(enemySelected.length ===0 && typeof defenderSelected.getLiveStatus === "undefined") {
-                    console.log("all done");
-                    $(".startBtn").attr("disabled", false);
-                    $(".attackBtn").attr("disabled", true);
-                } 
+                        // $(".attackBtn").attr("disabled", true);
+                        $(".attackBtn").unbind("click");
+                    };
+
+                }; 
+
+                if (enemySelected.length === 0 && (typeof defenderSelected.getLiveStatus === "undefined" || typeof defenderSelected.getLiveStatus === "function")) {
+                    $("#enemyCharacter").unbind("click");
+                }; 
+
+                if (!playerSelected.getLiveStatus()) {
+                    $("#enemyCharacter").unbind("click");
+                };
             });
         });
 
