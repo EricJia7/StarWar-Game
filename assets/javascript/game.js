@@ -9,22 +9,26 @@ var obiWan = {
     enemyB: false,
     defenderB: false,
 
+    //get this character's health 
     getCurrentHealth: function() {
         return this.health;
     },
 
+    //get the attack power if the character is the player
     getAttackPower: function() {
         if(this.playerB) {
         return this.attack;
         }
     },
 
+    //get the attack power if the character is the defender
     getCounterPower: function() {
         if(this.defenderB && !this.playerB) {
         return this.attack;
         }
     },
 
+    //check if the character is live or dead
     getLiveStatus: function() {
         if(this.health <= 0) {
             return false;
@@ -41,10 +45,12 @@ var obiWan = {
         }
     },
 
+    //Assign id for the html column to control display or remove 
     getAssignedID: function() {
         return this.name.replace(/\s/g, '').toLowerCase()+"Id";
     },
 
+    //If it is player, increse the attack power each time the player attack the defender
     increasePower: function() {
         if (this.playerB && !this.enemyB) {
             this.attack = this.attack + 8;
@@ -52,10 +58,12 @@ var obiWan = {
         }
     },
 
+    //Once player is hit by defender, lose health points
     getAttached: function(num) {
         this.health = this.health - num;
     },
 
+    //Once player win, lose or draw, reset the game
     getReset: function() {
         this.health = 120;
         this.attack = 8;
@@ -76,22 +84,26 @@ var luke = {
     enemyB: false,
     defenderB: false,
 
+        //get this character's health 
     getCurrentHealth: function() {
         return this.health;
     },
 
+    //get the attack power if the character is the player
     getAttackPower: function() {
         if(this.playerB) {
         return this.attack;
         }
     },
 
+    //get the attack power if the character is the defender
     getCounterPower: function() {
         if(this.defenderB && !this.playerB) {
         return this.attack;
         }
     },
 
+    //check if the character is live or dead
     getLiveStatus: function() {
         if(this.health <= 0) {
             return false;
@@ -108,21 +120,25 @@ var luke = {
         }
     },
 
+    //Assign id for the html column to control display or remove 
     getAssignedID: function() {
         return this.name.replace(/\s/g, '').toLowerCase()+"Id";
     },
 
+    //If it is player, increse the attack power each time the player attack the defender
     increasePower: function() {
         if (this.playerB && !this.enemyB) {
-            this.attack = this.attack + 5;
+            this.attack = this.attack + 8;
             return this.attack;
         }
     },
 
+    //Once player is hit by defender, lose health points
     getAttached: function(num) {
         this.health = this.health - num;
     },
 
+    //Once player win, lose or draw, reset the game
     getReset: function() {
         this.health = 100;
         this.attack = 5;
@@ -143,22 +159,26 @@ var darth = {
     enemyB: false,
     defenderB: false,
 
+    //get this character's health 
     getCurrentHealth: function() {
         return this.health;
     },
 
+    //get the attack power if the character is the player
     getAttackPower: function() {
         if(this.playerB) {
         return this.attack;
         }
     },
 
+    //get the attack power if the character is the defender
     getCounterPower: function() {
         if(this.defenderB && !this.playerB) {
         return this.attack;
         }
     },
 
+    //check if the character is live or dead
     getLiveStatus: function() {
         if(this.health <= 0) {
             return false;
@@ -175,24 +195,28 @@ var darth = {
         }
     },
 
+    //Assign id for the html column to control display or remove 
     getAssignedID: function() {
         return this.name.replace(/\s/g, '').toLowerCase()+"Id";
     },
 
+    //If it is player, increse the attack power each time the player attack the defender
     increasePower: function() {
         if (this.playerB && !this.enemyB) {
-            this.attack = this.attack + 10;
+            this.attack = this.attack + 8;
             return this.attack;
         }
     },
 
+    //Once player is hit by defender, lose health points
     getAttached: function(num) {
         this.health = this.health - num;
     },
 
+    //Once player win, lose or draw, reset the game
     getReset: function() {
         this.health = 150;
-        this.attack = 20;
+        this.attack = 15;
         this.playerB = false;
         this.enemyB = false;
         this.defenderB = false;
@@ -210,22 +234,26 @@ var maul = {
     enemyB: false,
     defenderB: false,
 
+    //get this character's health 
     getCurrentHealth: function() {
         return this.health;
     },
 
+    //get the attack power if the character is the player
     getAttackPower: function() {
         if(this.playerB) {
         return this.attack;
         }
     },
 
+    //get the attack power if the character is the defender
     getCounterPower: function() {
         if(this.defenderB && !this.playerB) {
         return this.attack;
         }
     },
 
+    //check if the character is live or dead
     getLiveStatus: function() {
         if(this.health <= 0) {
             return false;
@@ -242,33 +270,38 @@ var maul = {
         }
     },
 
+    //Assign id for the html column to control display or remove 
     getAssignedID: function() {
         return this.name.replace(/\s/g, '').toLowerCase()+"Id";
     },
 
+    //If it is player, increse the attack power each time the player attack the defender
     increasePower: function() {
         if (this.playerB && !this.enemyB) {
-            this.attack = this.attack + 15;
+            this.attack = this.attack + 8;
             return this.attack;
         }
     },
 
+    //Once player is hit by defender, lose health points
     getAttached: function(num) {
         this.health = this.health - num;
     },
 
+    //Once player win, lose or draw, reset the game
     getReset: function() {
-        this.health = 130;
-        this.attack = 25;
+        this.health = 180;
+        this.attack = 20;
         this.playerB = false;
         this.enemyB = false;
         this.defenderB = false;
     },
-
 };
 
+// create the list of all characters. 
 const charPool = [obiWan, luke, darth, maul];
 
+// get the list of ids for all the characters. 
 var allCharIdList = charPool.map(obj => obj.getAssignedID());
 
 console.log("image ID list is : " + allCharIdList);
@@ -290,6 +323,7 @@ var defenderSelected = {};
 //charid: give an id to each individual character based on the object.getAssignedID
 //imgGpType: base on nature of the character after player make the selection, assign each character a class based on the their types: all, player, enemy, defender
 
+// add the characters to the webpage base on the id tag of the html
 function addCharacter(divAppendId,charname,charhealth,charlink,charid,imgGpType) {
 
     var newColumn = $("<div>")
@@ -340,12 +374,15 @@ function addCharacter(divAppendId,charname,charhealth,charlink,charid,imgGpType)
 var imgDisplayPlaceHolderId = ["#playerCharacter","#enemyCharacter","#defenderCharacter"];
 var imgDisplayCharId = ["allImg", "playerImg", "enemyImg", "defendImg"];
 
+var noEnemyDisplayBoolean = false;
+
 //Display all characters at the #PlayerCharacter div
 function allCharDisplay() {
     $("."+imgDisplayCharId[0]).remove();
     charPool.map(obj => addCharacter(imgDisplayPlaceHolderId[0],obj.name,obj.health,obj.link,obj.getAssignedID(),imgDisplayCharId[0]));
 };
 
+//reset the HTML webpage
 function resetAllDisplay() {
     
     charPool.map(obj => obj.getReset());
@@ -382,6 +419,7 @@ function HealthDisplay() {
     $(".defendImg .healthtext").text(defenderSelected.getCurrentHealth());
 };
 
+//reset the result text display area. 
 function resultResetDisplay() {
     $("p.resultDisplay").empty();
 }
@@ -390,14 +428,20 @@ function noEnemyDisplay() {
     $("p.resultDisplay").html ('<p> There is no defender, click enemy above to select defender!</p>')
 };
 
+// display how many points the player has attacked the defender and vice versa. 
 function attackDisplay() {
-
-
+    $("p.resultDisplay").html ('<p> You attacked ' + defenderSelected.name + ' for ' + playerSelected.getAttackPower() + ' damages </p>');
+    if (defenderSelected.getLiveStatus()) {
+        $("p.resultDisplay").append ('<p>' + defenderSelected.name + ' attacked you for ' + defenderSelected.getCounterPower() + ' damages </p>')
+    };
 };
 
+// base on the end result, show if the player win or lose the game
 function winlosedrawDisplay(defender, player) {
+
     if (!defender && player && enemySelected.length != 0) {
         $("p.resultDisplay").html ('<p> You have defeated  ' +defenderSelected.name + ', you can choose to fight another enemy </p>')
+        $(".attackBtn").unbind("click");
     };
 
     if (!defender && player && enemySelected.length == 0) {
@@ -412,11 +456,6 @@ function winlosedrawDisplay(defender, player) {
     if (!defender && !player) {
         $("p.resultDisplay").html ('<p> You and Enemy defeated each other, this is a draw.... GAME OVER!!! </p>');
     };
-};
-
-
-function loseDisplay() {
-
 };
 
 
@@ -439,6 +478,7 @@ $(".startBtn").click(function() {
     //     console.log("the index is: ", index);
     // }); 
 
+    //select which character will be the player
     $(allCharIdList.map(str => "#"+str).join(", ")).click(function(){
 
         console.log("~~~~~~~~~~~~~~~~~~~~startbtn +1  function called");
@@ -461,6 +501,7 @@ $(".startBtn").click(function() {
 
         enemyImgDisplay();
 
+        //select which enemy will be the defender
         $("#enemyCharacter").on('click', '.enemyImg', function(){
 
             console.log("~~~~~~~~~~~~~~~~~~~~startbtn +2  function called");
@@ -479,8 +520,6 @@ $(".startBtn").click(function() {
 
             defenderSelected.defenderB = true;
             
-            // addCharacter(imgDisplayPlaceHolderId[2],defenderSelected.name,defenderSelected.health,defenderSelected.link,defenderSelected.getAssignedID(),imgDisplayPlaceHolderId[2]);
-
             defenderImgDisplay();
 
             $(".attackBtn").attr("disabled", false);
@@ -490,6 +529,7 @@ $(".startBtn").click(function() {
             console.log("current Player:", playerSelected);
             console.log("current defender:", defenderSelected);
 
+            // click to let Player attack the Defender. 
             $(".attackBtn").click(function(){
 
                 resultResetDisplay();
@@ -504,6 +544,7 @@ $(".startBtn").click(function() {
 
                     if (defenderSelected.getLiveStatus()) {
                         playerSelected.getAttached(defenderSelected.getCounterPower());
+                        attackDisplay()
                         playerSelected.increasePower();
                     };
 
@@ -523,27 +564,34 @@ $(".startBtn").click(function() {
                         $(".attackBtn").unbind("click");
                         defenderSelected = {};
                         defenderImgDisplay();
-                    };
+                        noEnemyDisplayBoolean = true;
+                        // $(".attackBtn").attr("disabled", true);
+                    }
                         
                     // if (typeof defenderSelected.getLiveStatus === "undefined") {
                     //     noEnemyDisplay();
                     // };
 
-                    if (defenderSelected.getLiveStatus() && !playerSelected.getLiveStatus()) {
+                    else if (defenderSelected.getLiveStatus() && !playerSelected.getLiveStatus()) {
                         console.log("Player dead");
                         // $(".attackBtn").attr("disabled", true);
                         $(".attackBtn").unbind("click");
                         // playerSelected = {};
                         // playerImgDisplay();
-                    };
+                    }
                         
-                    if (!defenderSelected.getLiveStatus() && !playerSelected.getLiveStatus()) {
+                    else if (!defenderSelected.getLiveStatus() && !playerSelected.getLiveStatus()) {
                         console.log ("Draw");
                         // $(".attackBtn").attr("disabled", true);
                         $(".attackBtn").unbind("click");
                     };
 
-                }; 
+                }
+                
+                else if (noEnemyDisplayBoolean) {
+                    noEnemyDisplay();
+                    noEnemyDisplayBoolean = false;
+                };
 
                 if (enemySelected.length === 0 && (typeof defenderSelected.getLiveStatus === "undefined" || typeof defenderSelected.getLiveStatus === "function")) {
                     $("#enemyCharacter").unbind("click");
