@@ -136,8 +136,8 @@ var luke = {
 // create object which to initiate each character
 var darth = {
     name: "Darth Sidious",
-    health: 100,
-    attack: 5,
+    health: 150,
+    attack: 20,
     link: "assets/images/darth.jpg",
     playerB: false,
     enemyB: false,
@@ -191,8 +191,8 @@ var darth = {
     },
 
     getReset: function() {
-        this.health = 100;
-        this.attack = 5;
+        this.health = 150;
+        this.attack = 20;
         this.playerB = false;
         this.enemyB = false;
         this.defenderB = false;
@@ -203,8 +203,8 @@ var darth = {
 // create object which to initiate each character
 var maul = {
     name: "Darth Maul",
-    health: 400,
-    attack: 20,
+    health: 180,
+    attack: 25,
     link: "assets/images/darth_maul.jpg",
     playerB: false,
     enemyB: false,
@@ -258,8 +258,8 @@ var maul = {
     },
 
     getReset: function() {
-        this.health = 400;
-        this.attack = 20;
+        this.health = 130;
+        this.attack = 25;
         this.playerB = false;
         this.enemyB = false;
         this.defenderB = false;
@@ -382,6 +382,43 @@ function HealthDisplay() {
     $(".defendImg .healthtext").text(defenderSelected.getCurrentHealth());
 };
 
+function resultResetDisplay() {
+    $("p.resultDisplay").empty();
+}
+
+function noEnemyDisplay() {
+    $("p.resultDisplay").html ('<p> There is no defender, click enemy above to select defender!</p>')
+};
+
+function attackDisplay() {
+
+
+};
+
+function winlosedrawDisplay(defender, player) {
+    if (!defender && player && enemySelected.length != 0) {
+        $("p.resultDisplay").html ('<p> You have defeated  ' +defenderSelected.name + ', you can choose to fight another enemy </p>')
+    };
+
+    if (!defender && player && enemySelected.length == 0) {
+        $("p.resultDisplay").html ('<p> You WON, GAME OVER!!!!</p>')
+    };
+
+
+    if (defender && !player) {
+        $("p.resultDisplay").html ('<p> You have been defeated..... GAME OVER </p>');
+    };
+
+    if (!defender && !player) {
+        $("p.resultDisplay").html ('<p> You and Enemy defeated each other, this is a draw.... GAME OVER!!! </p>');
+    };
+};
+
+
+function loseDisplay() {
+
+};
+
 
 // var imgDisplayPlaceHolderId = ["#playerCharacter","#enemyCharacter","#defenderCharacter"];
 // var imgDisplayCharId = ["allImg", "playerImg", "enemyImg", "defendImg"];
@@ -448,25 +485,37 @@ $(".startBtn").click(function() {
 
             $(".attackBtn").attr("disabled", false);
 
+            resultResetDisplay();
+
             console.log("current Player:", playerSelected);
             console.log("current defender:", defenderSelected);
 
             $(".attackBtn").click(function(){
 
+                resultResetDisplay();
+
                 console.log("~~~~~~~~~~~~~~~~~~~~startbtn +3  function called");
 
                 console.log("~~~~~~~~~~~~~~~~~~~~startbtn +4  function called");
+
                 if(playerSelected.getLiveStatus() && typeof defenderSelected.getLiveStatus == "function") {
                            
                     defenderSelected.getAttached(playerSelected.getAttackPower());
-                    playerSelected.getAttached(defenderSelected.getCounterPower());
-                    playerSelected.increasePower();
+
+                    if (defenderSelected.getLiveStatus()) {
+                        playerSelected.getAttached(defenderSelected.getCounterPower());
+                        playerSelected.increasePower();
+                    };
+
                     HealthDisplay();
 
                     console.log("playerSelected.getCurrentHealth : " , playerSelected.getCurrentHealth());
                     console.log("defenderSelected.getCurrentHealth :" , defenderSelected.getCurrentHealth());
                     console.log("playerSelected.getAttackPower : " , playerSelected.getAttackPower());
                     console.log("defenderSelected.getCounterPower :" , defenderSelected.getCounterPower());
+
+                    winlosedrawDisplay(defenderSelected.getLiveStatus(), playerSelected.getLiveStatus());
+
                     
                     if ((!defenderSelected.getLiveStatus()) && playerSelected.getLiveStatus()) {
                         console.log("defender.health : " , defenderSelected.getCurrentHealth());
@@ -476,7 +525,11 @@ $(".startBtn").click(function() {
                         defenderImgDisplay();
                     };
                         
-                    if (!playerSelected.getLiveStatus() && defenderSelected.getLiveStatus()) {
+                    // if (typeof defenderSelected.getLiveStatus === "undefined") {
+                    //     noEnemyDisplay();
+                    // };
+
+                    if (defenderSelected.getLiveStatus() && !playerSelected.getLiveStatus()) {
                         console.log("Player dead");
                         // $(".attackBtn").attr("disabled", true);
                         $(".attackBtn").unbind("click");
