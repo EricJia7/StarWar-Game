@@ -1,4 +1,3 @@
-
 // create object which to initiate each character
 var obiWan = {
     name: "Obi Wan Kenobi",
@@ -446,15 +445,18 @@ function winlosedrawDisplay(defender, player) {
 
     if (!defender && player && enemySelected.length == 0) {
         $("p.resultDisplay").html ('<p> You WON, GAME OVER!!!!</p>')
+        $(".startBtn").attr("disabled", false);
     };
 
 
     if (defender && !player) {
         $("p.resultDisplay").html ('<p> You have been defeated..... GAME OVER </p>');
+        $(".startBtn").attr("disabled", false);
     };
 
     if (!defender && !player) {
         $("p.resultDisplay").html ('<p> You and Enemy defeated each other, this is a draw.... GAME OVER!!! </p>');
+        $(".startBtn").attr("disabled", false);
     };
 };
 
@@ -466,9 +468,11 @@ function winlosedrawDisplay(defender, player) {
 $(".startBtn").click(function() {
 
     console.log("~~~~~~~~~~~~~~~~~~~~startbtn function called");
+    $(".startBtn").attr("disabled", true);
 
     resetAllDisplay();
     allCharDisplay();
+    resultResetDisplay();
 
     // $(".startBtn").attr("disabled", true);
 
@@ -560,37 +564,22 @@ $(".startBtn").click(function() {
                     
                     if ((!defenderSelected.getLiveStatus()) && playerSelected.getLiveStatus()) {
                         console.log("defender.health : " , defenderSelected.getCurrentHealth());
-                        // $(".attackBtn").attr("disabled", true);
                         $(".attackBtn").unbind("click");
                         defenderSelected = {};
                         defenderImgDisplay();
                         noEnemyDisplayBoolean = true;
-                        // $(".attackBtn").attr("disabled", true);
                     }
-                        
-                    // if (typeof defenderSelected.getLiveStatus === "undefined") {
-                    //     noEnemyDisplay();
-                    // };
 
                     else if (defenderSelected.getLiveStatus() && !playerSelected.getLiveStatus()) {
                         console.log("Player dead");
-                        // $(".attackBtn").attr("disabled", true);
                         $(".attackBtn").unbind("click");
-                        // playerSelected = {};
-                        // playerImgDisplay();
                     }
                         
                     else if (!defenderSelected.getLiveStatus() && !playerSelected.getLiveStatus()) {
                         console.log ("Draw");
-                        // $(".attackBtn").attr("disabled", true);
                         $(".attackBtn").unbind("click");
                     };
 
-                }
-                
-                else if (noEnemyDisplayBoolean) {
-                    noEnemyDisplay();
-                    noEnemyDisplayBoolean = false;
                 };
 
                 if (enemySelected.length === 0 && (typeof defenderSelected.getLiveStatus === "undefined" || typeof defenderSelected.getLiveStatus === "function")) {
