@@ -10,7 +10,7 @@ This project is to create a Star War RPG Game Website.
 
 Prerequiremnt: None.
 
-How to Run: 
+How to Run: <br><br>
 1: clone this file directly to local repository or just simply download the code <br>
 2: make sure all files are in the orginial order. <br>
 3: locate the index.html file <br>
